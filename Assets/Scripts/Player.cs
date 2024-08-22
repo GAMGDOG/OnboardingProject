@@ -6,11 +6,11 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Collider2D[] PlayerViewZone;
-    private Vector3 EnemyPosition;
+    private Animator playerAni;
 
     private void Start()
     {
-        EnemyPosition = transform.position;
+        playerAni = GetComponent<Animator>();
     }
     private void FixedUpdate()
     {
@@ -18,8 +18,10 @@ public class Player : MonoBehaviour
 
         if(EnemyCheck(PlayerViewZone)) //적이 시야에 있는지 확인
         {
-            FireArrow(EnemyPosition); //적을 공격
+            Debug.Log("적 확인");
+            InvokeRepeating("FireArrow", 0, 1);//적을 공격
         }
+        CancelInvoke();
     }
 
     private bool EnemyCheck(Collider2D[] Colliders)
@@ -28,16 +30,20 @@ public class Player : MonoBehaviour
         {
             if (collider.transform.gameObject.tag == "Enemy")
             {
-                EnemyPosition = collider.transform.position;
+                playerAni.SetBool("EnemyCheck", true);
                 return true;
             }
         }
+        playerAni.SetBool("EnemyCheck", false);
         return false;
     }
 
-    private void FireArrow(Vector3 EnmeyPosition)
+    private void FireArrow()
     {
+        Debug.Log("화살 발사");
+        var ArrowGo = ObjectPoolManager.instance.Pool.Get();
 
+        ArrowGo.transform.position = transform.position + new Vector3(0.7f, 4.95f, 0);
     }
 
     private void OnDrawGizmos()
