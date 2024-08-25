@@ -1,47 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
 
-    #region Singleton
-    private static GameManager _instance;
-    public static GameManager Instance
-    { 
-        get
-        {
-            if(!_instance)
-            {
-                _instance = GameObject.FindObjectOfType<GameManager>();
-                Init();
-            }
-            return _instance;
-        }
-    }
+    private GameObject Enemy;
+    public int Stage = 1;
+    public GameObject EnemySpawnPoint;
 
-    protected static void Init()
+    private void Awake()
     {
-        if(!_instance)
-        {
-            GameObject gameObject = new GameObject { name = "@GameManager" };
-            if(gameObject.GetComponent<GameManager>() == null)
-            {
-                _instance = gameObject.AddComponent<GameManager>();
-            }
-            DontDestroyOnLoad(gameObject);
-        }
+        Instance = this;
     }
 
-    #endregion
-    #region Fields
-
-    private ObjectPoolManager _pool = new();
-
-    public ObjectPoolManager Pool
+    private void Start()
     {
-        get { return Instance._pool; }
-        set { Instance._pool = value; }
+        EnemySpawn();
     }
-    #endregion
+
+    public void EnemySpawn()
+    {
+        List<Dictionary<string, object>> Monster = CSVReader.Read("SampleMonster");
+
+        Enemy = Resources.Load<GameObject>("Prefabs/"+ Monster[Stage-1]["Name"]);
+        Instantiate(Enemy, EnemySpawnPoint.transform);
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("Game Over");
+        Time.timeScale = 0.0f;
+    }
 }

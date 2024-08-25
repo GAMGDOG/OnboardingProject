@@ -10,11 +10,17 @@ public class Arrow : MonoBehaviour
 
     private void Update()
     {
-        if(transform.position.x > 10)
+        if(transform.position.x > 8)
         {
             Pool.Release(gameObject);
         }
 
         transform.Translate(Vector3.right * speed * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.CompareTag("Enemy"))
+            Pool.Release(gameObject);
     }
 }

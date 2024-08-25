@@ -41,7 +41,6 @@ public class ObjectPoolManager : MonoBehaviour
     private GameObject CreatePoolArrow()
     {
         GameObject pool = Instantiate(ArrowPrefab);
-        Debug.Log("화살 생성");
         pool.GetComponent<Arrow>().Pool = Pool;
         return pool;
     }
