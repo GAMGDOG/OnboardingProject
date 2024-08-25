@@ -16,12 +16,8 @@ public class Player : MonoBehaviour
     {
         PlayerViewZone = Physics2D.OverlapCircleAll(transform.position, 15f);
 
-        if(EnemyCheck(PlayerViewZone)) //적이 시야에 있는지 확인
-        {
-            Debug.Log("적 확인");
-            InvokeRepeating("FireArrow", 0, 1);//적을 공격
-        }
-        CancelInvoke();
+        EnemyCheck(PlayerViewZone); //적이 시야에 있는지 확인
+
     }
 
     private bool EnemyCheck(Collider2D[] Colliders)
@@ -31,6 +27,7 @@ public class Player : MonoBehaviour
             if (collider.transform.gameObject.tag == "Enemy")
             {
                 playerAni.SetBool("EnemyCheck", true);
+                Debug.Log("적 확인");
                 return true;
             }
         }

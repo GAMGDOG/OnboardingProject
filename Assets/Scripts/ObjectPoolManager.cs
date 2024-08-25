@@ -5,7 +5,18 @@ using UnityEngine.Pool;
 
 public class ObjectPoolManager : MonoBehaviour
 {
-    public static ObjectPoolManager instance;
+    private static ObjectPoolManager _instance;
+    public static ObjectPoolManager instance
+    {
+        get
+        {
+            if(!_instance)
+            {
+                _instance = GameObject.FindObjectOfType<ObjectPoolManager>();
+            }
+            return _instance;
+        }
+    }
 
     public GameObject ArrowPrefab;
 
@@ -13,21 +24,17 @@ public class ObjectPoolManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance == null)
-            instance = this;
-        else
-            Destroy(this.gameObject);
-
         Init();
     }
 
-    private void Init()
+    protected void Init()
     {
         Pool = new ObjectPool<GameObject>(CreatePoolArrow, OnTakeFromPool, OnReturnToPool, OnDestroyPoolObject, true, 5, 10);
 
         for(int i = 0;i<5; i++)
         {
             Arrow arrow = CreatePoolArrow().GetComponent<Arrow>();
+            arrow.Pool.Release(arrow.gameObject);
         }
     }
 
